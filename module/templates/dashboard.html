@@ -1,28 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Wizard Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body class="container">
-    <h1 class="mt-5">Configuration Summary</h1>
-    {% if wizard %}
-      <ul>
-        <li>Account Age (months): {{ wizard.account_age_months }}</li>
-        <li>VPN Usage: {{ wizard.vpn_usage }}</li>
-        <li>Paid Status: {{ wizard.paid_status }}</li>
-        <li>IP Reputation Slider Value: {{ wizard.ip_reputation_slider }} (Computed IP Risk: {{ wizard.computed_ip_risk }})</li>
-        <li>Risk Score: {{ wizard.risk_score }}</li>
-        <li>Suggested Rate Limit: {{ wizard.suggested_rate_limit }} messages per minute</li>
-      </ul>
-      <div class="alert alert-info" role="alert">
-        Note: If FloodWait errors occur during downloads, the system will automatically wait for 40 seconds,
-        reduce the rate limit by 15%, and update you accordingly.
-      </div>
-    {% else %}
-      <p>No configuration data available.</p>
-    {% endif %}
-    <a href="{{ url_for('wizard') }}" class="btn btn-secondary">Back</a>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Download Dashboard</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="wizard.html" class="nav-link">Configuration</a>
+            </nav>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="risk-card card">
+                <h2>Risk Analysis</h2>
+                <div id="riskChart" class="chart-container"></div>
+            </div>
+
+            <div class="stats-card card">
+                <h2>Download Statistics</h2>
+                <div id="statsTable" class="stats-table">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Fetch and display risk data
+            fetch('/api/risk_stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Pie chart for risk distribution
+                    Plotly.newPlot('riskChart', [{
+                        values: [data.high_risk, data.medium_risk, data.low_risk],
+                        labels: ['High Risk', 'Medium Risk', 'Low Risk'],
+                        type: 'pie',
+                        hole: 0.4,
+                        marker: {
+                            colors: ['#ff6384', '#ffcd56', '#4bc0c0']
+                        }
+                    }], {
+                        title: 'Download Risk Distribution'
+                    });
+
+                    // Statistics table
+                    const statsHtml = `
+                        <div class="stat-item">
+                            <span class="stat-label">Total Downloads:</span>
+                            <span class="stat-value">${data.total_downloads}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Average Size:</span>
+                            <span class="stat-value">${data.avg_size_mb} MB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Download:</span>
+                            <span class="stat-value">${data.last_download}</span>
+                        </div>
+                    `;
+                    document.getElementById('statsTable').innerHTML = statsHtml;
+                });
+        </script>
+    </div>
+</body>
 </html>
