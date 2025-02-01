@@ -1,15 +1,31 @@
+# --- Core Telegram Components ---
 #https://github.com/tangyoha/pyrogram/archive/refs/tags/v2.0.69.zip
-https://github.com/tangyoha/pyrogram/archive/refs/heads/beta.zip
 #https://github.com/tangyoha/pyrogram/archive/refs/heads/master_v2.0.69_1.zip
-PyYAML==5.3.1
-rich==12.5.1
+pyrogram @ https://github.com/tangyoha/pyrogram/archive/refs/heads/beta.zip
+python-telegram-bot==20.3
 PyTgCrypto==1.2.6
-loguru==0.6.0
-# aligo==5.4.0
+
+# --- Web Interface ---
+Flask==2.3.2
 Werkzeug==2.2.2
-flask==2.2.2
-ply==3.11
-ruamel.yaml==0.17.21
+Flask-WTF==1.2.1
 flask-login==0.6.2
+plotly==5.18.0
+
+# --- Data Models & Config ---
+pydantic==1.10.7
+python-dotenv==1.0.0
+ruamel.yaml==0.17.21
+PyYAML==5.3.1  # Coexists with ruamel.yaml if needed
+
+# --- Utilities & Security ---
+rich==12.5.1
+loguru==0.6.0
 pycryptodome==3.18.0
 requests==2.32.3
+ply==3.11
+
+# --- Recommended Additions ---
+anyio==3.7.1        # Async I/O support
+httpx==0.27.0       # Modern HTTP client
+python-dateutil==2.9.0.post0  # Date parsing
